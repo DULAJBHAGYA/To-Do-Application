@@ -314,32 +314,3 @@ npm run build
 # Build and run with Docker
 docker-compose up --build -d
 ```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 👨‍💻 Author
-
-**Your Name**
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Email: your.email@example.com
-
-## 🙏 Acknowledgments
-
-- Spring Boot team for the excellent framework
-- React team for the amazing UI library
-- Docker team for containerization tools
-- All contributors and open source projects used
-
----
-
-**Happy Task Managing! 🎉**
