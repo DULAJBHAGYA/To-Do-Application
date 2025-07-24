@@ -35,6 +35,10 @@ public class Task {
     @Column(name = "priority")
     private String priority;
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+    
     // Constructors
     public Task() {
         this.createdAt = LocalDateTime.now();
@@ -44,6 +48,11 @@ public class Task {
         this();
         this.title = title;
         this.description = description;
+    }
+    
+    public Task(String title, String description, User user) {
+        this(title, description);
+        this.user = user;
     }
     
     // Getters and Setters
@@ -103,6 +112,14 @@ public class Task {
         this.priority = priority;
     }
     
+    public User getUser() {
+        return user;
+    }
+    
+    public void setUser(User user) {
+        this.user = user;
+    }
+    
     @PrePersist
     public void prePersist() {
         if (this.createdAt == null) {
@@ -123,6 +140,7 @@ public class Task {
                 ", createdAt=" + createdAt +
                 ", completedAt=" + completedAt +
                 ", priority='" + priority + '\'' +
+                ", userId=" + (user != null ? user.getId() : null) +
                 '}';
     }
 }

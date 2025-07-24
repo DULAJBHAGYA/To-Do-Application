@@ -1,6 +1,8 @@
 package com.todoapp.controller;
 
 import com.todoapp.model.Task;
+import com.todoapp.model.User;
+import com.todoapp.repository.UserRepository;
 import com.todoapp.service.TaskService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -15,36 +17,61 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/tasks")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 public class TaskController {
     
     private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
     
     private final TaskService taskService;
+    private final UserRepository userRepository;
     
     @Autowired
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskService taskService, UserRepository userRepository) {
         this.taskService = taskService;
+        this.userRepository = userRepository;
     }
     
     /**
-     * Get the most recent 5 incomplete tasks
+     * Get tasks for the current user
      */
     @GetMapping
-    public ResponseEntity<List<Task>> getTasks() {
-        logger.debug("GET /api/tasks - Fetching recent tasks");
-        List<Task> tasks = taskService.getRecentTasks();
+    public ResponseEntity<List<Task>> getTasks(@RequestHeader(value = "X-User-ID", required = false) Long userId) {
+        logger.debug("GET /api/tasks - Fetching tasks for user: {}", userId);
+        
+        if (userId == null) {
+            // For backward compatibility, return all tasks
+            List<Task> tasks = taskService.getRecentTasks();
+            return ResponseEntity.ok(tasks);
+        }
+        
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        
+        List<Task> tasks = taskService.getRecentTasksByUser(userOpt.get());
         return ResponseEntity.ok(tasks);
     }
     
     /**
-     * Create a new task
+     * Create a new task for the current user
      */
     @PostMapping
-    public ResponseEntity<Task> createTask(@Valid @RequestBody Task task) {
-        logger.debug("POST /api/tasks - Creating new task: {}", task.getTitle());
+    public ResponseEntity<Task> createTask(@Valid @RequestBody Task task, 
+                                         @RequestHeader(value = "X-User-ID", required = false) Long userId) {
+        logger.debug("POST /api/tasks - Creating new task: {} for user: {}", task.getTitle(), userId);
+        
         try {
-            Task createdTask = taskService.createTask(task);
+            Task createdTask;
+            if (userId != null) {
+                Optional<User> userOpt = userRepository.findById(userId);
+                if (userOpt.isEmpty()) {
+                    return ResponseEntity.badRequest().build();
+                }
+                createdTask = taskService.createTaskForUser(task, userOpt.get());
+            } else {
+                createdTask = taskService.createTask(task);
+            }
             return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
         } catch (IllegalArgumentException e) {
             logger.error("Error creating task: {}", e.getMessage());
@@ -56,10 +83,21 @@ public class TaskController {
      * Mark a task as completed
      */
     @PutMapping("/{id}/complete")
-    public ResponseEntity<Task> completeTask(@PathVariable Long id) {
-        logger.debug("PUT /api/tasks/{}/complete - Marking task as completed", id);
+    public ResponseEntity<Task> completeTask(@PathVariable Long id,
+                                           @RequestHeader(value = "X-User-ID", required = false) Long userId) {
+        logger.debug("PUT /api/tasks/{}/complete - Marking task as completed for user: {}", id, userId);
+        
         try {
-            Task completedTask = taskService.completeTask(id);
+            Task completedTask;
+            if (userId != null) {
+                Optional<User> userOpt = userRepository.findById(userId);
+                if (userOpt.isEmpty()) {
+                    return ResponseEntity.badRequest().build();
+                }
+                completedTask = taskService.completeTask(id, userOpt.get());
+            } else {
+                completedTask = taskService.completeTask(id);
+            }
             return ResponseEntity.ok(completedTask);
         } catch (IllegalArgumentException e) {
             logger.error("Error completing task {}: {}", id, e.getMessage());
@@ -71,10 +109,20 @@ public class TaskController {
      * Delete a task
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
-        logger.debug("DELETE /api/tasks/{} - Deleting task", id);
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id,
+                                         @RequestHeader(value = "X-User-ID", required = false) Long userId) {
+        logger.debug("DELETE /api/tasks/{} - Deleting task for user: {}", id, userId);
+        
         try {
-            taskService.deleteTask(id);
+            if (userId != null) {
+                Optional<User> userOpt = userRepository.findById(userId);
+                if (userOpt.isEmpty()) {
+                    return ResponseEntity.badRequest().build();
+                }
+                taskService.deleteTask(id, userOpt.get());
+            } else {
+                taskService.deleteTask(id);
+            }
             return ResponseEntity.noContent().build();
         } catch (IllegalArgumentException e) {
             logger.error("Error deleting task {}: {}", id, e.getMessage());
@@ -86,20 +134,63 @@ public class TaskController {
      * Get a specific task by ID
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable Long id) {
-        logger.debug("GET /api/tasks/{} - Fetching task by ID", id);
-        Optional<Task> task = taskService.getTaskById(id);
+    public ResponseEntity<Task> getTaskById(@PathVariable Long id,
+                                          @RequestHeader(value = "X-User-ID", required = false) Long userId) {
+        logger.debug("GET /api/tasks/{} - Fetching task by ID for user: {}", id, userId);
+        
+        Optional<Task> task;
+        if (userId != null) {
+            Optional<User> userOpt = userRepository.findById(userId);
+            if (userOpt.isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+            task = taskService.getTaskById(id, userOpt.get());
+        } else {
+            task = taskService.getTaskById(id);
+        }
+        
         return task.map(ResponseEntity::ok)
                   .orElse(ResponseEntity.notFound().build());
     }
     
     /**
-     * Get the most recent 5 completed tasks
+     * Get completed tasks for the current user
      */
     @GetMapping("/completed")
-    public ResponseEntity<List<Task>> getCompletedTasks() {
-        logger.debug("GET /api/tasks/completed - Fetching recent completed tasks");
-        List<Task> tasks = taskService.getRecentCompletedTasks();
+    public ResponseEntity<List<Task>> getCompletedTasks(@RequestHeader(value = "X-User-ID", required = false) Long userId) {
+        logger.debug("GET /api/tasks/completed - Fetching completed tasks for user: {}", userId);
+        
+        List<Task> tasks;
+        if (userId != null) {
+            Optional<User> userOpt = userRepository.findById(userId);
+            if (userOpt.isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+            tasks = taskService.getRecentCompletedTasksByUser(userOpt.get());
+        } else {
+            tasks = taskService.getRecentCompletedTasks();
+        }
+        
+        return ResponseEntity.ok(tasks);
+    }
+    
+    /**
+     * Get all tasks for the current user
+     */
+    @GetMapping("/all")
+    public ResponseEntity<List<Task>> getAllTasks(@RequestHeader(value = "X-User-ID", required = false) Long userId) {
+        logger.debug("GET /api/tasks/all - Fetching all tasks for user: {}", userId);
+        
+        if (userId == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        
+        List<Task> tasks = taskService.getAllTasksByUser(userOpt.get());
         return ResponseEntity.ok(tasks);
     }
 }

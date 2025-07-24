@@ -20,6 +20,25 @@ export type UpdatableTask = Omit<Task, 'id' | 'createdAt' | 'completedAt'>;
 
 const API_BASE_URL = '/api/tasks'
 
+const getHeaders = (): HeadersInit => {
+  const headers: HeadersInit = { 'Content-Type': 'application/json' };
+  
+  // Get user ID from localStorage
+  const userStr = localStorage.getItem('user');
+  if (userStr) {
+    try {
+      const user = JSON.parse(userStr);
+      if (user.id) {
+        headers['X-User-ID'] = user.id.toString();
+      }
+    } catch (error) {
+      console.error('Error parsing user from localStorage:', error);
+    }
+  }
+  
+  return headers;
+};
+
 const handleResponse = async (response: Response) => {
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}))
@@ -30,34 +49,44 @@ const handleResponse = async (response: Response) => {
 
 export const taskService = {
   getTasks: async (): Promise<Task[]> => {
-    const response = await fetch(API_BASE_URL)
+    const response = await fetch(API_BASE_URL, {
+      headers: getHeaders()
+    })
     return handleResponse(response)
   },
 
   getTaskStats: async (): Promise<TaskStats> => {
-    const response = await fetch(`${API_BASE_URL}/stats`)
+    const response = await fetch(`${API_BASE_URL}/stats`, {
+      headers: getHeaders()
+    })
     return handleResponse(response)
   },
 
   getCompletedTasks: async (): Promise<Task[]> => {
-    const response = await fetch(`${API_BASE_URL}/completed`)
+    const response = await fetch(`${API_BASE_URL}/completed`, {
+      headers: getHeaders()
+    })
     return handleResponse(response)
   },
 
   getPendingTasks: async (): Promise<Task[]> => {
-    const response = await fetch(`${API_BASE_URL}/pending`)
+    const response = await fetch(`${API_BASE_URL}/pending`, {
+      headers: getHeaders()
+    })
     return handleResponse(response)
   },
 
   getHighPriorityTasks: async (): Promise<Task[]> => {
-    const response = await fetch(`${API_BASE_URL}/high-priority`)
+    const response = await fetch(`${API_BASE_URL}/high-priority`, {
+      headers: getHeaders()
+    })
     return handleResponse(response)
   },
 
   updateTask: async (id: number, taskData: Partial<Task>): Promise<Task> => {
     const response = await fetch(`${API_BASE_URL}/${id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getHeaders(),
       body: JSON.stringify(taskData),
     });
     return handleResponse(response);
@@ -66,7 +95,7 @@ export const taskService = {
   createTask: async (taskData: { title: string, description: string, priority: string, dueDate: string | null }): Promise<Task> => {
     const response = await fetch(API_BASE_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getHeaders(),
       body: JSON.stringify(taskData)
     })
     return handleResponse(response)
@@ -75,7 +104,7 @@ export const taskService = {
   completeTask: async (taskId: number): Promise<void> => {
     const response = await fetch(`${API_BASE_URL}/${taskId}/complete`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' }
+      headers: getHeaders()
     });
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}))
@@ -85,7 +114,8 @@ export const taskService = {
 
   deleteTask: async (taskId: number): Promise<void> => {
     const response = await fetch(`${API_BASE_URL}/${taskId}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: getHeaders()
     });
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}))

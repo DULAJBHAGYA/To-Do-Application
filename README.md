@@ -1,6 +1,6 @@
 # To-Do Application
 
-A full-stack task management application built with modern technologies and containerized with Docker.
+A full-stack task management application with user authentication, built with modern technologies and containerized with Docker.
 
 ## 🚀 Technologies Used
 
@@ -16,6 +16,7 @@ A full-stack task management application built with modern technologies and cont
 - **Spring Boot 3.2.0** - Java-based REST API framework
 - **Spring Data JPA** - Database abstraction layer
 - **Spring Web** - RESTful web services
+- **Spring Security** - Authentication and authorization
 - **Java 17** - Modern Java runtime
 - **Maven** - Build tool and dependency management
 
@@ -30,12 +31,21 @@ A full-stack task management application built with modern technologies and cont
 
 ## 📋 Features
 
+### Authentication
+- ✅ User registration with email validation
+- ✅ User login with username/email
+- ✅ Secure password hashing (BCrypt)
+- ✅ Session-based authentication
+- ✅ Protected routes and user-specific data
+
+### Task Management
 - ✅ Create, read, update, and delete tasks
 - ✅ Mark tasks as complete/incomplete
 - ✅ Set task priorities (High, Medium, Low)
 - ✅ Add due dates to tasks
 - ✅ Drag and drop task reordering
 - ✅ Task statistics dashboard
+- ✅ User-specific task ownership
 - ✅ Responsive design
 - ✅ Real-time updates
 - ✅ Persistent data storage
@@ -51,6 +61,8 @@ To-Do-Application/
 │   │   │   ├── model/       # Entity classes
 │   │   │   ├── repository/  # Data access layer
 │   │   │   ├── service/     # Business logic
+│   │   │   ├── dto/         # Data Transfer Objects
+│   │   │   ├── config/      # Configuration classes
 │   │   │   └── TodoAppApplication.java
 │   │   └── resources/
 │   │       └── application.yml
@@ -108,6 +120,26 @@ Once all containers are running, you can access the application at:
 - **Frontend (Main App)**: http://localhost:3000
 - **Backend API**: http://localhost:8080
 - **Database**: localhost:5432
+
+## 🔐 Authentication
+
+### Demo Account
+The application comes with a pre-configured demo account:
+
+- **Username**: `demo`
+- **Password**: `password123`
+
+### Registration
+New users can create accounts with:
+- Username (3-50 characters)
+- Email (valid email format)
+- Password (minimum 6 characters)
+- Password confirmation
+
+### Login
+Users can log in using either:
+- Username
+- Email address
 
 ## 🐳 Docker Commands
 
@@ -189,15 +221,29 @@ SPRING_DATASOURCE_PASSWORD: todopass
 Open your browser and navigate to http://localhost:3000
 
 You should see:
-- Task Manager interface
-- Sample tasks (if any exist)
-- Ability to create, edit, and delete tasks
+- Login/Register page
+- Task Manager interface (after authentication)
+- User-specific tasks
+- Logout functionality
 
 ### 2. Backend API Testing
 
 Test the REST API endpoints:
 
 ```bash
+# Test authentication endpoint
+curl http://localhost:8080/api/auth/test
+
+# Login with demo account
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"usernameOrEmail":"demo","password":"password123"}'
+
+# Register new user
+curl -X POST http://localhost:8080/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"username":"testuser","email":"test@example.com","password":"password123","confirmPassword":"password123"}'
+
 # Get all tasks
 curl http://localhost:8080/api/tasks
 
@@ -223,6 +269,11 @@ psql -h localhost -p 5432 -U todouser -d todoapp
 ```
 
 ## 🚀 API Endpoints
+
+### Authentication
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - User login
+- `GET /api/auth/test` - Test authentication endpoint
 
 ### Tasks
 - `GET /api/tasks` - Get all tasks
@@ -266,7 +317,16 @@ psql -h localhost -p 5432 -U todouser -d todoapp
    docker-compose restart database
    ```
 
-4. **Frontend not loading**
+4. **Authentication issues**
+   ```bash
+   # Check backend logs
+   docker-compose logs backend
+   
+   # Test authentication endpoint
+   curl http://localhost:3000/api/auth/test
+   ```
+
+5. **Frontend not loading**
    ```bash
    # Check frontend logs
    docker-compose logs frontend
@@ -314,6 +374,14 @@ npm run build
 # Build and run with Docker
 docker-compose up --build -d
 ```
+
+## 🔒 Security Features
+
+- **Password Hashing**: All passwords are hashed using BCrypt
+- **Input Validation**: Server-side validation for all inputs
+- **CORS Configuration**: Proper CORS setup for cross-origin requests
+- **SQL Injection Protection**: Using JPA/Hibernate with parameterized queries
+- **XSS Protection**: Input sanitization and proper content types
 
 ## 🤝 Contributing
 

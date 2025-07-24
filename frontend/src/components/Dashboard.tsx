@@ -8,7 +8,11 @@ interface TaskStats {
   highPriority: number;
 }
 
-const Dashboard: React.FC = () => {
+interface DashboardProps {
+  refreshTrigger?: number;
+}
+
+const Dashboard: React.FC<DashboardProps> = ({ refreshTrigger }) => {
   const [stats, setStats] = useState<TaskStats>({
     total: 0,
     completed: 0,
@@ -43,6 +47,13 @@ const Dashboard: React.FC = () => {
     const interval = setInterval(fetchTaskStats, 30000);
     return () => clearInterval(interval);
   }, []);
+
+  // Refresh stats when refreshTrigger changes
+  useEffect(() => {
+    if (refreshTrigger && refreshTrigger > 0) {
+      fetchTaskStats();
+    }
+  }, [refreshTrigger]);
 
   return (
     <div className="space-y-6 p-6 bg-white rounded-lg shadow-sm">
