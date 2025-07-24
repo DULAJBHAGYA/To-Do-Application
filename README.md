@@ -85,7 +85,7 @@ Before running this application, make sure you have the following installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/To-Do-Application.git
+git clone https://github.com/DULAJBHAGYA/To-Do-Application.git
 cd To-Do-Application
 ```
 
