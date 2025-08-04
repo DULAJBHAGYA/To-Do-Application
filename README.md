@@ -2,15 +2,31 @@
 
 A full-stack task management application with user authentication, built with modern technologies and containerized with Docker.
 
+## 🚀 Quick Start
+
+The fastest way to get started:
+
+```bash
+# Clone and run in one command
+git clone <repository-url>
+cd To-Do-Application
+docker-compose up --build -d
+
+# Access the application
+open http://localhost:3000
+```
+
+**Demo Account**: `demo` / `password123`
+
 ## 🚀 Technologies Used
 
 ### Frontend
 - **React 18** - Modern UI library
 - **TypeScript** - Type-safe JavaScript
-- **Vite** - Fast build tool and development server
-- **Tailwind CSS** - Utility-first CSS framework
+- **Vite 4.4.5** - Fast build tool and development server
+- **Tailwind CSS 3.3.3** - Utility-first CSS framework
 - **React Beautiful DnD** - Drag and drop functionality
-- **Axios** - HTTP client for API calls
+- **Axios 1.4.0** - HTTP client for API calls
 
 ### Backend
 - **Spring Boot 3.2.0** - Java-based REST API framework
@@ -19,6 +35,7 @@ A full-stack task management application with user authentication, built with mo
 - **Spring Security** - Authentication and authorization
 - **Java 17** - Modern Java runtime
 - **Maven** - Build tool and dependency management
+- **JWT** - JSON Web Token authentication
 
 ### Database
 - **PostgreSQL 15.3** - Relational database
@@ -35,7 +52,7 @@ A full-stack task management application with user authentication, built with mo
 - ✅ User registration with email validation
 - ✅ User login with username/email
 - ✅ Secure password hashing (BCrypt)
-- ✅ Session-based authentication
+- ✅ JWT-based authentication
 - ✅ Protected routes and user-specific data
 
 ### Task Management
@@ -49,6 +66,13 @@ A full-stack task management application with user authentication, built with mo
 - ✅ Responsive design
 - ✅ Real-time updates
 - ✅ Persistent data storage
+
+### UI/UX Features
+- ✅ Dark/Light theme toggle
+- ✅ Responsive design for mobile and desktop
+- ✅ Modern, clean interface
+- ✅ Loading states and error handling
+- ✅ Toast notifications
 
 ## 🏗️ Project Structure
 
@@ -73,7 +97,8 @@ To-Do-Application/
 │   │   ├── components/      # React components
 │   │   ├── services/        # API services
 │   │   ├── hooks/          # Custom React hooks
-│   │   └── contexts/       # React contexts
+│   │   ├── contexts/       # React contexts
+│   │   └── types/          # TypeScript type definitions
 │   ├── Dockerfile
 │   ├── nginx.conf          # Nginx configuration
 │   ├── vite.config.ts
@@ -94,22 +119,34 @@ Before running this application, make sure you have the following installed:
 
 ## 📦 Installation & Setup
 
-### 1. Clone the Repository
-
-```bash
-cd To-Do-Application
-```
-
-### 2. Run with Docker Compose
+### Option 1: Docker Compose (Recommended)
 
 The easiest way to run the application is using Docker Compose, which will build and start all services automatically:
 
 ```bash
+# Clone the repository
+git clone <repository-url>
+cd To-Do-Application
+
 # Build and start all services
 docker-compose up --build -d
 
 # Or run in foreground to see logs
 docker-compose up --build
+```
+
+### Option 2: Development Mode
+
+For development with hot reloading:
+
+```bash
+# Start backend and database
+docker-compose up -d database backend
+
+# Run frontend in development mode
+cd frontend
+npm install
+npm run dev
 ```
 
 ### 3. Access the Application
@@ -374,11 +411,52 @@ npm run build
 docker-compose up --build -d
 ```
 
+### Testing
+
+```bash
+# Frontend tests
+cd frontend
+npm test
+
+# Backend tests
+cd backend
+./mvnw test
+```
+
 ## 🔒 Security Features
 
 - **Password Hashing**: All passwords are hashed using BCrypt
+- **JWT Authentication**: Secure token-based authentication
 - **Input Validation**: Server-side validation for all inputs
 - **CORS Configuration**: Proper CORS setup for cross-origin requests
 - **SQL Injection Protection**: Using JPA/Hibernate with parameterized queries
 - **XSS Protection**: Input sanitization and proper content types
+
+## 📊 Current Status
+
+✅ **Application Status**: Running successfully  
+✅ **Database**: PostgreSQL 15.3 - Connected  
+✅ **Backend**: Spring Boot 3.2.0 - API accessible  
+✅ **Frontend**: React 18 with Vite - UI responsive  
+✅ **Authentication**: JWT-based with demo account  
+✅ **Containerization**: Docker Compose orchestration  
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- Spring Boot team for the excellent framework
+- React team for the amazing UI library
+- Docker team for containerization tools
+- All contributors and maintainers
 
