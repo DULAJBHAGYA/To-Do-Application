@@ -2,7 +2,7 @@
 
 A full-stack task management application with user authentication, built with modern technologies and containerized with Docker.
 
-## 🚀 Quick Start
+## Quick Start
 
 The fastest way to get started:
 
@@ -18,7 +18,7 @@ open http://localhost:3000
 
 **Demo Account**: `demo` / `password123`
 
-## 🚀 Technologies Used
+## Technologies Used
 
 ### Frontend
 - **React 18** - Modern UI library
@@ -46,35 +46,35 @@ open http://localhost:3000
 - **Docker Compose** - Multi-container orchestration
 - **Nginx** - Web server and reverse proxy
 
-## 📋 Features
+## Features
 
 ### Authentication
-- ✅ User registration with email validation
-- ✅ User login with username/email
-- ✅ Secure password hashing (BCrypt)
-- ✅ JWT-based authentication
-- ✅ Protected routes and user-specific data
+- User registration with email validation
+- User login with username/email
+- Secure password hashing (BCrypt)
+- JWT-based authentication
+- Protected routes and user-specific data
 
 ### Task Management
-- ✅ Create, read, update, and delete tasks
-- ✅ Mark tasks as complete/incomplete
-- ✅ Set task priorities (High, Medium, Low)
-- ✅ Add due dates to tasks
-- ✅ Drag and drop task reordering
-- ✅ Task statistics dashboard
-- ✅ User-specific task ownership
-- ✅ Responsive design
-- ✅ Real-time updates
-- ✅ Persistent data storage
+- Create, read, update, and delete tasks
+- Mark tasks as complete/incomplete
+- Set task priorities (High, Medium, Low)
+- Add due dates to tasks
+- Drag and drop task reordering
+- Task statistics dashboard
+- User-specific task ownership
+- Responsive design
+- Real-time updates
+- Persistent data storage
 
 ### UI/UX Features
-- ✅ Dark/Light theme toggle
-- ✅ Responsive design for mobile and desktop
-- ✅ Modern, clean interface
-- ✅ Loading states and error handling
-- ✅ Toast notifications
+- Dark/Light theme toggle
+- Responsive design for mobile and desktop
+- Modern, clean interface
+- Loading states and error handling
+- Toast notifications
 
-## 🏗️ Project Structure
+## Project Structure
 
 ```
 To-Do-Application/
@@ -109,7 +109,7 @@ To-Do-Application/
 └── README.md
 ```
 
-## 🛠️ Prerequisites
+## Prerequisites
 
 Before running this application, make sure you have the following installed:
 
@@ -117,7 +117,7 @@ Before running this application, make sure you have the following installed:
 - **Docker Compose** (version 2.0 or higher)
 - **Git** (for cloning the repository)
 
-## 📦 Installation & Setup
+## Installation & Setup
 
 ### Option 1: Docker Compose (Recommended)
 
@@ -149,7 +149,7 @@ npm install
 npm run dev
 ```
 
-### 3. Access the Application
+### Access the Application
 
 Once all containers are running, you can access the application at:
 
@@ -157,7 +157,7 @@ Once all containers are running, you can access the application at:
 - **Backend API**: http://localhost:8080
 - **Database**: localhost:5432
 
-## 🔐 Authentication
+## Authentication
 
 ### Demo Account
 The application comes with a pre-configured demo account:
@@ -177,7 +177,7 @@ Users can log in using either:
 - Username
 - Email address
 
-## 🐳 Docker Commands
+## Docker Commands
 
 ### Basic Commands
 
@@ -226,7 +226,7 @@ npm install
 npm run dev
 ```
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 
@@ -250,9 +250,9 @@ SPRING_DATASOURCE_PASSWORD: todopass
 - **Backend**: 8080
 - **Database**: 5432
 
-## 🧪 Testing the Application
+## Testing the Application
 
-### 1. Frontend Testing
+### Frontend Testing
 
 Open your browser and navigate to http://localhost:3000
 
@@ -262,7 +262,7 @@ You should see:
 - User-specific tasks
 - Logout functionality
 
-### 2. Backend API Testing
+### Backend API Testing
 
 Test the REST API endpoints:
 
@@ -292,7 +292,7 @@ curl -X POST http://localhost:8080/api/tasks \
 curl http://localhost:8080/api/tasks/stats
 ```
 
-### 3. Database Testing
+### Database Testing
 
 Connect to the PostgreSQL database:
 
@@ -304,7 +304,7 @@ docker exec -it todo-db psql -U todouser -d todoapp
 psql -h localhost -p 5432 -U todouser -d todoapp
 ```
 
-## 🚀 API Endpoints
+## API Endpoints
 
 ### Authentication
 - `POST /api/auth/register` - Register new user
@@ -324,7 +324,7 @@ psql -h localhost -p 5432 -U todouser -d todoapp
 - `GET /api/tasks/pending` - Get pending tasks
 - `GET /api/tasks/high-priority` - Get high priority tasks
 
-## 🔍 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -384,7 +384,7 @@ docker-compose logs -f
 docker-compose logs -f backend
 ```
 
-## 📝 Development
+## Development
 
 ### Running in Development Mode
 
@@ -423,7 +423,7 @@ cd backend
 ./mvnw test
 ```
 
-## 🔒 Security Features
+## Security Features
 
 - **Password Hashing**: All passwords are hashed using BCrypt
 - **JWT Authentication**: Secure token-based authentication
@@ -432,16 +432,16 @@ cd backend
 - **SQL Injection Protection**: Using JPA/Hibernate with parameterized queries
 - **XSS Protection**: Input sanitization and proper content types
 
-## 📊 Current Status
+## Current Status
 
-✅ **Application Status**: Running successfully  
-✅ **Database**: PostgreSQL 15.3 - Connected  
-✅ **Backend**: Spring Boot 3.2.0 - API accessible  
-✅ **Frontend**: React 18 with Vite - UI responsive  
-✅ **Authentication**: JWT-based with demo account  
-✅ **Containerization**: Docker Compose orchestration  
+- **Application Status**: Running successfully
+- **Database**: PostgreSQL 15.3 - Connected
+- **Backend**: Spring Boot 3.2.0 - API accessible
+- **Frontend**: React 18 with Vite - UI responsive
+- **Authentication**: JWT-based with demo account
+- **Containerization**: Docker Compose orchestration
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -449,11 +449,11 @@ cd backend
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Spring Boot team for the excellent framework
 - React team for the amazing UI library
